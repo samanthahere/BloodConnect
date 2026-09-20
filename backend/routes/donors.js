@@ -1,6 +1,7 @@
 import express from 'express';
 import pool from '../db/pool.js';
 import requireAuth from '../middleware/auth.js';
+import { COMPATIBLE_DONORS, eligibleCutoffDate } from '../utils/bloodCompatibility.js';
 
 const router = express.Router();
 
@@ -62,6 +63,44 @@ router.get('/me', requireAuth, async (req, res) => {
       return res.status(404).json({ error: 'Donor profile not found' });
     }
     res.json({ profile: result.rows[0] });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Something went wrong' });
+  }
+});
+
+// Search eligible donors for a patient's blood group in a district
+router.get('/search', requireAuth, async (req, res) => {
+  const { blood_group, district } = req.query;
+
+  if (!Object.hasOwn(COMPATIBLE_DONORS, blood_group)) {
+    return res.status(400).json({ error: 'Invalid blood group' });
+  }
+  if (!district) {
+    return res.status(400).json({ error: 'District is required' });
+  }
+
+  try {
+    const result = await pool.query(
+      `SELECT dp.id, u.name, dp.blood_group, dp.district, dp.area, dp.last_donated_at
+       FROM donor_profiles dp
+       JOIN users u ON u.id = dp.user_id
+       WHERE dp.blood_group = ANY($1)
+         AND LOWER(dp.district) = LOWER($2)
+         AND dp.is_available = TRUE
+         AND (dp.last_donated_at IS NULL OR dp.last_donated_at <= $3)
+         AND dp.user_id <> $4
+       ORDER BY (dp.blood_group = $5) DESC, dp.last_donated_at ASC NULLS FIRST
+       LIMIT 50`,
+      [
+        COMPATIBLE_DONORS[blood_group],
+        district,
+        eligibleCutoffDate(),
+        req.userId,
+        blood_group,
+      ]
+    );
+    res.json({ donors: result.rows });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Something went wrong' });
