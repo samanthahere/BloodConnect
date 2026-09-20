@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import pool from './db/pool.js';
 import authRoutes from './routes/auth.js';
+import donorRoutes from './routes/donors.js';
 
 const app = express();
 app.use(cors());
@@ -22,6 +23,7 @@ app.get('/db-test', async (req, res) => {
 });
 
 app.use('/api/auth', authRoutes);
+app.use('/api/donors', donorRoutes);
 
 app.listen(5000, () => {
   console.log('Server running on port 5000');
