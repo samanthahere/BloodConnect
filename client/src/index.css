@@ -112,3 +112,83 @@ button:disabled {
   padding: 10px 12px;
   border-radius: 6px;
 }
+.success {
+  background: #e8f5e9;
+  color: #1b5e20;
+  padding: 10px 12px;
+  border-radius: 6px;
+}
+
+label.checkbox {
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+}
+
+label.checkbox input {
+  width: auto;
+  padding: 0;
+}
+
+button.secondary {
+  background: white;
+  color: var(--red);
+  border: 1px solid var(--red);
+}
+
+button.secondary:hover {
+  background: #ffe0e0;
+}
+
+.hint {
+  color: #666;
+  font-size: 0.85rem;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 24px 0;
+}
+
+.search-form {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.search-form label {
+  flex: 1;
+  min-width: 160px;
+}
+
+.cards {
+  display: grid;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.card {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px;
+}
+
+.badge {
+  min-width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--red);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+}
