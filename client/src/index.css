@@ -192,3 +192,81 @@ hr {
   justify-content: center;
   font-weight: 700;
 }
+.navbar {
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.nav-links {
+  flex-wrap: wrap;
+}
+
+.request {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px;
+  margin-top: 16px;
+}
+
+.request-head {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+
+.request-head > div:nth-child(2) {
+  flex: 1;
+}
+
+.status {
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.status-open {
+  background: #e3f2fd;
+  color: #0d47a1;
+}
+
+.status-fulfilled,
+.status-accepted {
+  background: #e8f5e9;
+  color: #1b5e20;
+}
+
+.status-cancelled,
+.status-declined {
+  background: #eeeeee;
+  color: #555;
+}
+
+.donors {
+  margin-top: 12px;
+}
+
+.donors h4 {
+  margin: 0 0 6px;
+}
+
+.donors ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.info {
+  background: #fff8e1;
+  color: #6d4c00;
+  padding: 10px 12px;
+  border-radius: 6px;
+}

@@ -17,6 +17,9 @@ export default function Navbar() {
         {user ? (
           <>
             <Link to="/find">Find donors</Link>
+            <Link to="/request/new">Request blood</Link>
+            <Link to="/my-requests">My requests</Link>
+            <Link to="/donor-requests">Donor requests</Link>
             <Link to="/profile">My profile</Link>
             <span>Hi, {user.name}</span>
             <button onClick={handleLogout}>Logout</button>
