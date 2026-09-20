@@ -1,32 +1,36 @@
+import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
-import pool from './db/pool.js';
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
 import authRoutes from './routes/auth.js';
 import donorRoutes from './routes/donors.js';
 import requestRoutes from './routes/requests.js';
 
 const app = express();
-app.use(cors());
-app.use(express.json());
+const PORT = process.env.PORT || 5000;
+
+app.use(helmet());
+app.use(cors({ origin: process.env.CLIENT_URL || 'http://localhost:5173' }));
+app.use(express.json({ limit: '10kb' }));
+
+// Slow down password guessing: max 100 auth requests per 15 minutes per IP
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  limit: 100,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many attempts, please try again later' },
+});
 
 app.get('/health', (req, res) => {
   res.json({ ok: true });
 });
 
-app.get('/db-test', async (req, res) => {
-  try {
-    const result = await pool.query('SELECT COUNT(*) FROM users');
-    res.json({ ok: true, users: result.rows[0].count });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ ok: false, error: 'Database connection failed' });
-  }
-});
-
-app.use('/api/auth', authRoutes);
+app.use('/api/auth', authLimiter, authRoutes);
 app.use('/api/donors', donorRoutes);
 app.use('/api/requests', requestRoutes);
 
-app.listen(5000, () => {
-  console.log('Server running on port 5000');
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
