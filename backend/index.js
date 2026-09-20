@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import pool from './db/pool.js';
+import authRoutes from './routes/auth.js';
 
 const app = express();
 app.use(cors());
@@ -19,6 +20,8 @@ app.get('/db-test', async (req, res) => {
     res.status(500).json({ ok: false, error: 'Database connection failed' });
   }
 });
+
+app.use('/api/auth', authRoutes);
 
 app.listen(5000, () => {
   console.log('Server running on port 5000');
