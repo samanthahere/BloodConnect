@@ -2,7 +2,9 @@
 
 A full stack web app that helps people find eligible blood donors in their district. Donors' phone numbers stay private until a donor chooses to accept a request.
 
-**Live demo:** _coming soon_
+**Live demo:** https://bloodconnect-19m9.onrender.com
+
+_Hosted on free tiers, so the first load can take up to a minute while the server wakes up._
 
 ## Screenshots
 
@@ -30,6 +32,7 @@ A full stack web app that helps people find eligible blood donors in their distr
 - **Database:** PostgreSQL, plain SQL with the `pg` library and parameterized queries
 - **Auth and security:** bcryptjs, JSON Web Tokens, helmet, express-rate-limit
 - **Testing:** Node's built-in test runner
+- **Hosting:** Render (frontend and API), Neon (PostgreSQL)
 
 ## How matching works
 
