@@ -99,7 +99,7 @@ export default function FindDonors() {
                 const base = DISTRICT_COORDS[d.district];
                 if (!base) return null;
                 return (
-                  <Marker key={d.id} position={jitter(base, i)}>
+                   <Marker key={d.id} position={jitter(base, i)} alt={d.name}>
                     <Popup>
                       <strong>{d.name}</strong>
                       <br />
