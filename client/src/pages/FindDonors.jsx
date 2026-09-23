@@ -1,6 +1,15 @@
 import { useState } from 'react';
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import { api } from '../api.js';
 import { BLOOD_GROUPS, DISTRICTS } from '../constants.js';
+import { DISTRICT_COORDS } from '../districtCoordinates.js';
+
+// Spread pins slightly apart so donors in the same district don't stack exactly
+function jitter([lat, lng], index) {
+  const angle = index * 0.9;
+  const offset = 0.01 * index;
+  return [lat + Math.sin(angle) * offset, lng + Math.cos(angle) * offset];
+}
 
 export default function FindDonors() {
   const [bloodGroup, setBloodGroup] = useState('');
@@ -24,6 +33,10 @@ export default function FindDonors() {
       setLoading(false);
     }
   }
+
+  const mapCenter = district && DISTRICT_COORDS[district]
+    ? DISTRICT_COORDS[district]
+    : [23.8103, 90.4125]; // Dhaka, default center
 
   return (
     <div className="page">
@@ -75,25 +88,49 @@ export default function FindDonors() {
       )}
 
       {donors && donors.length > 0 && (
-        <div className="cards">
-          {donors.map((d) => (
-            <div className="card" key={d.id}>
-              <div className="badge">{d.blood_group}</div>
-              <div>
-                <strong>{d.name}</strong>
+        <>
+          <div className="map-wrap">
+            <MapContainer center={mapCenter} zoom={11} scrollWheelZoom={false}>
+              <TileLayer
+                attribution='&copy; OpenStreetMap contributors'
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              />
+              {donors.map((d, i) => {
+                const base = DISTRICT_COORDS[d.district];
+                if (!base) return null;
+                return (
+                  <Marker key={d.id} position={jitter(base, i)}>
+                    <Popup>
+                      <strong>{d.name}</strong>
+                      <br />
+                      {d.blood_group} &middot; {d.area || d.district}
+                    </Popup>
+                  </Marker>
+                );
+              })}
+            </MapContainer>
+          </div>
+
+          <div className="cards">
+            {donors.map((d) => (
+              <div className="card" key={d.id}>
+                <div className="badge">{d.blood_group}</div>
                 <div>
-                  {d.area ? `${d.area}, ` : ''}
-                  {d.district}
+                  <strong>{d.name}</strong>
+                  <div>
+                    {d.area ? `${d.area}, ` : ''}
+                    {d.district}
+                  </div>
+                  <small>
+                    {d.last_donated_at
+                      ? `Last donated: ${d.last_donated_at.slice(0, 10)}`
+                      : 'Has not donated before'}
+                  </small>
                 </div>
-                <small>
-                  {d.last_donated_at
-                    ? `Last donated: ${d.last_donated_at.slice(0, 10)}`
-                    : 'Has not donated before'}
-                </small>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        </>
       )}
     </div>
   );

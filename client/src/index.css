@@ -370,3 +370,14 @@ hr {
     font-size: 1.6rem;
   }
 }
+.map-wrap {
+  margin-top: 20px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.map-wrap .leaflet-container {
+  height: 320px;
+  width: 100%;
+}
